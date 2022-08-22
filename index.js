@@ -43,7 +43,7 @@ app.listen(port, host, function() {
 
 function getToken () {
   return new Promise((resolve, reject) => {
-    const url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + appId + "&secret=" + appSecret + "";
+    const url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + config.appid + "&secret=" + config.appsecret + "";
     let option = {
       url: url,
       method: "GET",
