@@ -31,7 +31,7 @@ function sendMessage(accessToken, message) {
   return new Promise((resolve, reject) => {
     const url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + accessToken;
     const data = {
-      touser: "owyap5vYkZT2Br-hlzThQ0f-soHk",
+      touser: "owyap5vR7qzgaim_3JWzIbAz0s9Q",
       template_id: "UlDupLN7oYNkT1e4ZnLiV4G4T6lGlMMmDVj4jpLprVM",
       data: message
     };

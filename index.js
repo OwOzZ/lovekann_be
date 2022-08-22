@@ -1,7 +1,8 @@
 const express = require("express");
 const sha1 = require("node-sha1");
 const { getToken, sendMessage } = require("./wx");
-const {  getLocationKey, getCurrentCondition } = require("./weather");
+const { getLocationKey, getCurrentCondition } = require("./weather");
+const schedule = require("node-schedule");
 
 const host = "0.0.0.0";
 const port = 7500;
@@ -51,23 +52,23 @@ function constructInfo(weatherInfo) {
   }
 }
 
+function scheduleTask() {
+  let rule = new schedule.RecurrenceRule();
+  rule.hour = 9;
+  rule.minute = 0;
+  rule.second = 0;
+  // rule.second = [10, 20, 30, 40, 50];
+  let job = schedule.scheduleJob(rule, async() => {
+    const location = await getLocationKey("suzhou");
+    const weather = await getCurrentCondition(location[0].Key);
+
+    const message = constructInfo(weather[0]);
+    const { access_token } = await getToken();
+
+    await sendMessage(access_token, message);
+  });
+}
+
 app.listen(port, host, () => {
-  // console.log(`服务器运行在http://${host}:${port}`);
+  scheduleTask();
 });
-
-setTimeout(async () => {
-  const location = await getLocationKey("suzhou");
-  const weather = await getCurrentCondition(location[0].Key);
-
-  const message = constructInfo(weather[0]);
-
-  const { access_token } = await getToken();
-  await sendMessage(access_token, message);
-}, 100);
-
-// getLocationKey("suzhou");
-
-
-// setTimeout(async () => {
-//   await getToken();
-// }, 100);
