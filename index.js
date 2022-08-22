@@ -53,17 +53,24 @@ function getToken () {
       }
     };
     request(option, (err, resp, body) => {
-      // console.log("token")
+      console.log("get token body", body);
+
+      const access_token = JSON.parse(body).access_token;
+      sendMessage(openId, access_token);
       resolve(body)
     });
   })
 };
 
-function sendMessage(accessToken) {
+function sendMessage(openId, accessToken) {
   return new Promise((resolve, reject) => {
     const url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + accessToken;
     const data = {
-      value: 'ddddd'
+      touser: "owyap5vYkZT2Br-hlzThQ0f-soHk",
+      template_id: "Craqa2f8DB9rqWOpn917FHLKwhEHk-J9nZAt2P-nYiU",
+      data: {
+        test: "eeee"
+      }
     };
     let option = {
       url: url,
@@ -75,10 +82,28 @@ function sendMessage(accessToken) {
       }
     };
     request(option, (err, resp, body) => {
+      console.log("send message", body, err, resp);
+
       resolve(body);
     });
   })
 }
+
+// function getOpenId(code) {
+//   const url = `https://api.weixin.qq.com/sns/oauth2/access_token?
+//                appid=${config.appid}
+//                &secret=${config.appsecret}
+//                &code=${code}
+//                &grant_type=authorization_code`;
+//   request(url, (err, resp, body) => {
+//     console.log("get open id", body, err, resp);
+
+//     if (!err && resp.statusCode == 200) {
+//       const openId = body.openid;
+//       getToken()
+//     }
+//   })
+// }
 
 setTimeout(async () => {
   // token
@@ -86,9 +111,3 @@ setTimeout(async () => {
   const msgRes = await sendMessage(access_token);
   console.log("msgRes", msgRes);
 }, 1000);
-
-// router.post("/", async(req, resp, next) => {
-//   const { access_token } = await getToken();
-//   const msgRes = await sendMessage(access_token);
-//   resp.sendResult(msgRes, 200, "登录成功");
-// });
