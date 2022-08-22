@@ -54,10 +54,9 @@ function constructInfo(weatherInfo) {
 
 function scheduleTask() {
   let rule = new schedule.RecurrenceRule();
-  rule.hour = 9;
+  rule.hour = 8;
   rule.minute = 0;
   rule.second = 0;
-  // rule.second = [10, 20, 30, 40, 50];
   let job = schedule.scheduleJob(rule, async() => {
     const location = await getLocationKey("suzhou");
     const weather = await getCurrentCondition(location[0].Key);
