@@ -55,14 +55,14 @@ function getToken () {
     request(option, (err, resp, body) => {
       console.log("get token body", body);
 
-      const access_token = JSON.parse(body).access_token;
-      sendMessage(openId, access_token);
+      const { access_token } = body;
+      sendMessage(access_token);
       resolve(body)
     });
   })
 };
 
-function sendMessage(openId, accessToken) {
+function sendMessage(accessToken) {
   return new Promise((resolve, reject) => {
     const url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + accessToken;
     const data = {
@@ -108,6 +108,6 @@ function sendMessage(openId, accessToken) {
 setTimeout(async () => {
   // token
   const { access_token } = await getToken();
-  const msgRes = await sendMessage(access_token);
-  console.log("msgRes", msgRes);
+  // const msgRes = await sendMessage(access_token);
+  // console.log("msgRes", msgRes);
 }, 1000);
