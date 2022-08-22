@@ -1,8 +1,9 @@
 const express = require("express");
-const config = require("./config.json");
+// const config = require("./config.json");
 const crypto = require("crypto");
 const request = require("request");
 const sha1 = require("node-sha1");
+const constant = require("./constant");
 
 const router = express.Router();
 
@@ -43,7 +44,10 @@ app.listen(port, host, function() {
 
 function getToken () {
   return new Promise((resolve, reject) => {
-    const url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + config.appid + "&secret=" + config.appsecret + "";
+    const url = `https://api.weixin.qq.com/cgi-bin/token
+                 ?grant_type=client_credential
+                 &appid=${constant.wx.appId}
+                 &secret=${constant.wx.appSecret}`;
     let option = {
       url: url,
       method: "GET",
