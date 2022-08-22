@@ -3,7 +3,7 @@ const express = require("express");
 const crypto = require("crypto");
 const request = require("request");
 const sha1 = require("node-sha1");
-const constant = require("./constant.js");
+const constant = require("./constant");
 
 const router = express.Router();
 
