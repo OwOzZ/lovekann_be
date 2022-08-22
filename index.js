@@ -3,7 +3,7 @@ const express = require("express");
 const crypto = require("crypto");
 const request = require("request");
 const sha1 = require("node-sha1");
-const constant = require("./constant");
+const constant = require("./constant.js");
 
 const router = express.Router();
 
@@ -112,6 +112,4 @@ function sendMessage(accessToken) {
 setTimeout(async () => {
   // token
   const { access_token } = await getToken();
-  // const msgRes = await sendMessage(access_token);
-  // console.log("msgRes", msgRes);
 }, 1000);
