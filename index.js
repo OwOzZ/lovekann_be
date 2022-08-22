@@ -46,7 +46,7 @@ function constructInfo(weatherInfo) {
     },
     "remark":{
       "value":"今天又是爱你的一天呢",
-      "color":"#173177"
+      "color":"#EC407A"
     }
   }
 }
