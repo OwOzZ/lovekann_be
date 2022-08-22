@@ -1,11 +1,7 @@
 const express = require("express");
-// const config = require("./config.json");
-const crypto = require("crypto");
-const request = require("request");
 const sha1 = require("node-sha1");
-const constant = require("./constant");
-
-const router = express.Router();
+const { getToken, sendMessage } = require("./wx");
+const {  getLocationKey, getCurrentCondition } = require("./weather");
 
 const host = "0.0.0.0";
 const port = 7500;
@@ -38,78 +34,40 @@ app.get("/", async(req, res) => {
 	}
 });
 
-app.listen(port, host, function() {
-  console.log(`服务器运行在http://${host}:${port}`);
-});
-
-function getToken () {
-  return new Promise((resolve, reject) => {
-    const url = `https://api.weixin.qq.com/cgi-bin/token
-                 ?grant_type=client_credential
-                 &appid=${constant.wx.appId}
-                 &secret=${constant.wx.appSecret}`;
-    let option = {
-      url: url,
-      method: "GET",
-      json: true,
-      headers: {
-        "content-type": "application/json"
-      }
-    };
-    request(option, (err, resp, body) => {
-      console.log("get token body", body);
-
-      const { access_token } = body;
-      sendMessage(access_token);
-      resolve(body)
-    });
-  })
-};
-
-function sendMessage(accessToken) {
-  return new Promise((resolve, reject) => {
-    const url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + accessToken;
-    const data = {
-      touser: "owyap5vYkZT2Br-hlzThQ0f-soHk",
-      template_id: "Craqa2f8DB9rqWOpn917FHLKwhEHk-J9nZAt2P-nYiU",
-      data: {
-        test: "eeee"
-      }
-    };
-    let option = {
-      url: url,
-      method: "POST",
-      json: true,
-      body: data,
-      headers: {
-        "content-type": "application/json",
-      }
-    };
-    request(option, (err, resp, body) => {
-      console.log("send message", body, err, resp);
-
-      resolve(body);
-    });
-  })
+function constructInfo(weatherInfo) {
+  return {
+    "first": {
+      "value": "💗亲爱的晨祎宝贝上午好💗",
+      "color": "#EC407A"
+    },
+    "keyword1":{
+      "value": `今天${weatherInfo.Temperature.Metric.Value}度，${weatherInfo.WeatherText}，要注意防暑哟`,
+      "color":"#173177"
+    },
+    "remark":{
+      "value":"今天又是爱你的一天呢",
+      "color":"#173177"
+    }
+  }
 }
 
-// function getOpenId(code) {
-//   const url = `https://api.weixin.qq.com/sns/oauth2/access_token?
-//                appid=${config.appid}
-//                &secret=${config.appsecret}
-//                &code=${code}
-//                &grant_type=authorization_code`;
-//   request(url, (err, resp, body) => {
-//     console.log("get open id", body, err, resp);
-
-//     if (!err && resp.statusCode == 200) {
-//       const openId = body.openid;
-//       getToken()
-//     }
-//   })
-// }
+app.listen(port, host, () => {
+  // console.log(`服务器运行在http://${host}:${port}`);
+});
 
 setTimeout(async () => {
-  // token
+  const location = await getLocationKey("suzhou");
+  const weather = await getCurrentCondition(location[0].Key);
+
+  const message = constructInfo(weather[0]);
+
   const { access_token } = await getToken();
-}, 1000);
+  await sendMessage(access_token, message);
+}, 100);
+
+// getLocationKey("suzhou");
+
+
+// setTimeout(async () => {
+//   await getToken();
+// }, 100);
