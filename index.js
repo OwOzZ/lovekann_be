@@ -20,7 +20,7 @@ app.all("*", (req, res, next) => {
   next();
 });
 
-app.get("/", (req, res) => {
+app.get("/", async(req, res) => {
   const token = config.token;
   const signature = req.query.signature;
 	const nonce = req.query.nonce; 
@@ -35,52 +35,57 @@ app.get("/", (req, res) => {
 	} else {
 		res.send("验证失败");
 	}
+
+  // token
+  const { access_token } = await getToken();
+  const msgRes = await sendMessage(access_token);
+  console.log("msgRes", msgRes);
 });
 
 app.listen(port, host, function() {
   console.log(`服务器运行在http://${host}:${port}`);
 });
 
-// function getToken () {
-//   return new Promise((resolve, reject) => {
-//     const url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + appId + "&secret=" + appSecret + "";
-//     let option = {
-//       url: url,
-//       method: "GET",
-//       json: true,
-//       headers: {
-//         "content-type": "application/json"
-//       }
-//     };
-//     request(option, (err, resp, body) => {
-//       resolve(body)
-//     });
-//   })
-// };
+function getToken () {
+  return new Promise((resolve, reject) => {
+    const url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + appId + "&secret=" + appSecret + "";
+    let option = {
+      url: url,
+      method: "GET",
+      json: true,
+      headers: {
+        "content-type": "application/json"
+      }
+    };
+    request(option, (err, resp, body) => {
+      resolve(body)
+    });
+  })
+};
 
-// function sendMessage(accessToken) {
-//   return new Promise((resolve, reject) => {
-//     const url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + accessToken;
-//     const data = {
-//       value: 'ddddd'
-//     };
-//     let option = {
-//       url: url,
-//       method: "POST",
-//       json: true,
-//       body: data,
-//       headers: {
-//         "content-type": "application/json",
-//       }
-//     };
-//     request(option, (err, resp, body) => {
-//       resolve(body);
-//     })
-//   })
-// }
+function sendMessage(accessToken) {
+  return new Promise((resolve, reject) => {
+    const url = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + accessToken;
+    const data = {
+      value: 'ddddd'
+    };
+    let option = {
+      url: url,
+      method: "POST",
+      json: true,
+      body: data,
+      headers: {
+        "content-type": "application/json",
+      }
+    };
+    request(option, (err, resp, body) => {
+      resolve(body);
+    });
+  })
+}
 
 // router.post("/", async(req, resp, next) => {
 //   const { access_token } = await getToken();
 //   const msgRes = await sendMessage(access_token);
 //   resp.sendResult(msgRes, 200, "登录成功");
-// })
+// });
