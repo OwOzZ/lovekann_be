@@ -35,11 +35,6 @@ app.get("/", async(req, res) => {
 	} else {
 		res.send("验证失败");
 	}
-
-  // token
-  const { access_token } = await getToken();
-  const msgRes = await sendMessage(access_token);
-  console.log("msgRes", msgRes);
 });
 
 app.listen(port, host, function() {
@@ -58,6 +53,7 @@ function getToken () {
       }
     };
     request(option, (err, resp, body) => {
+      // console.log("token")
       resolve(body)
     });
   })
@@ -83,6 +79,13 @@ function sendMessage(accessToken) {
     });
   })
 }
+
+setTimeout(async () => {
+  // token
+  const { access_token } = await getToken();
+  const msgRes = await sendMessage(access_token);
+  console.log("msgRes", msgRes);
+}, 1000);
 
 // router.post("/", async(req, resp, next) => {
 //   const { access_token } = await getToken();
