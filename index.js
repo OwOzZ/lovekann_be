@@ -59,7 +59,8 @@ function scheduleTask() {
   rule.second = 0;
   let job = schedule.scheduleJob(rule, async() => {
     const location = await getLocationKey("suzhou");
-    const weather = await getCurrentCondition(location[0].Key);
+    const suzhouJS = location.filter(item => item.AdministrativeArea.LocalizedName === "Jiangsu")[0];
+    const weather = await getCurrentCondition(suzhouJS.Key);
 
     const message = constructInfo(weather[0]);
     const { access_token } = await getToken();
